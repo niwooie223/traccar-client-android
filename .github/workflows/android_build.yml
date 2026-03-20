@@ -17,24 +17,24 @@ jobs:
       with:
         distribution: 'temurin'
         java-version: '17'
-        cache: 'gradle' # Enable Gradle caching
+        cache: 'gradle'
 
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
 
-    - name: Build with Gradle
-      # Using --info and --stacktrace to get detailed error logs if it fails
-      run: ./gradlew assembleDebug --info --stacktrace
+    - name: Build with Gradle (Regular Debug Flavor)
+      # Building the 'regular' flavor which does not require google-services.json
+      run: ./gradlew assembleRegularDebug --info --stacktrace
 
     - name: Upload debug APK
-      if: success() # Only upload if the build succeeded
+      if: success()
       uses: actions/upload-artifact@v4
       with:
-        name: app-debug
-        path: app/build/outputs/apk/debug/app-debug.apk
+        name: app-regular-debug
+        path: app/build/outputs/apk/regular/debug/app-regular-debug.apk
 
     - name: Upload Build Logs on Failure
-      if: failure() # If the build fails, upload the logs for inspection
+      if: failure()
       uses: actions/upload-artifact@v4
       with:
         name: build-logs
