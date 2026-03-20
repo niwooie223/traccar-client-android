@@ -192,11 +192,36 @@ class MainFragment : PreferenceFragmentCompat(), OnSharedPreferenceChangeListene
 
     private fun initPreferences() {
         PreferenceManager.setDefaultValues(requireActivity(), R.xml.preferences, false)
+
+        // Set default server URL if not already present
+        if (!sharedPreferences.contains(KEY_URL)) {
+            sharedPreferences.edit().putString(KEY_URL, "http://traccar.cclb-corps.org:8082" ).apply()
+        }
+
+        // Set default interval if not already present
+        if (!sharedPreferences.contains(KEY_INTERVAL)) {
+            sharedPreferences.edit().putString(KEY_INTERVAL, "300").apply() // 300 seconds (5 minutes)
+        }
+
+        // Enable tracking by default if not already present
+        if (!sharedPreferences.contains(KEY_STATUS)) {
+            sharedPreferences.edit().putBoolean(KEY_STATUS, true).apply()
+        }
+
+        // Set default distance if not already present
+        if (!sharedPreferences.contains(KEY_DISTANCE)) {
+            sharedPreferences.edit().putString(KEY_DISTANCE, "20").apply() // Report every 20 meters
+        }
+
+        // Set default device ID if not already present
         if (!sharedPreferences.contains(KEY_DEVICE)) {
             val id = (Random().nextInt(900000) + 100000).toString()
             sharedPreferences.edit().putString(KEY_DEVICE, id).apply()
-            findPreference<EditTextPreference>(KEY_DEVICE)?.text = id
+            // No need to set findPreference<EditTextPreference>(KEY_DEVICE)?.text = id here,
+            // as the summary update below will reflect the SharedPreferences value.
         }
+
+        // Update the summary for KEY_DEVICE to reflect the current value
         findPreference<Preference>(KEY_DEVICE)?.summary = sharedPreferences.getString(KEY_DEVICE, null)
     }
 
